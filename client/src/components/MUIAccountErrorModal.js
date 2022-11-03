@@ -1,4 +1,5 @@
-import { Alert, Button, Modal } from "@mui/material";
+import { Alert, AlertTitle, Button, Collapse, IconButton, Modal } from "@mui/material";
+import CloseIcon from '@mui/icons-material/Close';
 import { useContext } from "react";
 import AuthContext from "../auth";
 
@@ -8,10 +9,8 @@ const style = {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: 400,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
+    bgcolor: 'navy',
     boxShadow: 24,
-    p: 4,
 };
 
 export default function MUIAccountErrorModal() {
@@ -27,22 +26,22 @@ export default function MUIAccountErrorModal() {
     }
     return (
         <Modal
-            open={auth.error != null}
+            open={auth.error != null} 
         >
-            <Alert sx={style} severity="error">
-                <div className="modal-dialog">
-                <header className="dialog-header">
-                    {msg}
-                </header>
-                <div id="confirm-cancel-container">
-                    <Button
-                        id="dialog-no-button"
-                        className="modal-button"
-                        onClick={handleClose}
-                    >Cancel</Button>
-                </div>
-            </div>
-            </Alert>
+            <Collapse in={auth.error != null}>
+                <Alert variant="filled" severity="error" action={
+                    <IconButton aria-label="close" color="inherit" size="large" onClick={handleClose}>
+                        <CloseIcon fontSize="inherit"/>
+                    </IconButton>
+                }>
+                    <AlertTitle><strong>Error</strong></AlertTitle>
+                    <div className="error-modal-dialog">
+                        <header className="dialog-header">
+                            {msg}
+                        </header>
+                    </div>
+                </Alert>
+            </Collapse>
         </Modal>
     )
 
