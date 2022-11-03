@@ -12,6 +12,7 @@ import SongCard from './SongCard'
 import SplashScreen from './SplashScreen'
 import Statusbar from './Statusbar'
 import WorkspaceScreen from './WorkspaceScreen'
+import MUIAccountErrorModal from './MUIAccountErrorModal'
 /*
     This serves as a module so that we can import
     all the other components as we wish.
@@ -24,6 +25,7 @@ export {
     HomeScreen,
     HomeWrapper,
     ListCard, 
+    MUIAccountErrorModal,
     LoginScreen,
     MUIDeleteModal,
     MUIEditSongModal,
