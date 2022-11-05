@@ -3,6 +3,7 @@ import GlobalStoreContext from '../store';
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 
 const style = {
     position: 'absolute',
@@ -32,44 +33,32 @@ export default function MUIRemoveSongModal() {
         modalClass += " is-visible";
     }
     let songTitle = "";
+    let songArtist = "";
     if (store.currentSong) {
         songTitle = store.currentSong.title;
+        songArtist = store.currentSong.artist;
     }
 
     return (
-        <Modal
-            open={store.listMarkedForDeletion !== null}
-        >
-            <Box sx={style}>
-            <div
-        id="remove-song-modal"
-        className={modalClass}
-        data-animation="slideInOutLeft">
-        <div className="modal-root" id='verify-remove-song-root'>
-            <div className="modal-north">
-                Remove {songTitle}?
-            </div>
-            <div className="modal-center">
-                <div className="modal-center-content">
-                    Are you sure you wish to permanently remove {songTitle} from the playlist?
-                </div>
-            </div>
-            <div className="modal-south">
-                <input type="button" 
-                    id="remove-song-confirm-button" 
-                    className="modal-button" 
-                    onClick={handleConfirmRemoveSong} 
-                    value='Confirm' />
-                <input 
-                    type="button" 
-                    id="remove-song-cancel-button" 
-                    className="modal-button" 
-                    onClick={handleCancelRemoveSong} 
-                    value='Cancel' />
-            </div>
-        </div>
-    </div>
-            </Box>
-        </Modal>
+        <Dialog
+        open={store.currentModal === "REMOVE_SONG"}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Remove song?"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you wish to remove {songTitle} by {songArtist} from the playlist?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleConfirmRemoveSong}>Confirm</Button>
+          <Button onClick={handleCancelRemoveSong} autoFocus>
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
     );
 }

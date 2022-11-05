@@ -1,6 +1,9 @@
 import React, { useContext, useState } from 'react'
 import { GlobalStoreContext } from '../store'
 
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close'
+
 function SongCard(props) {
     const { store } = useContext(GlobalStoreContext);
     const [ draggedTo, setDraggedTo ] = useState(0);
@@ -39,6 +42,7 @@ function SongCard(props) {
     function handleClick(event) {
         // DOUBLE CLICK IS FOR SONG EDITING
         if (event.detail === 2) {
+            console.log("double clicked!");
             store.showEditSongModal(index, song);
         }
     }
@@ -64,13 +68,15 @@ function SongCard(props) {
                 href={"https://www.youtube.com/watch?v=" + song.youTubeId}>
                 {song.title} by {song.artist}
             </a>
-            <input
-                type="button"
+            <IconButton
+                aria-label="close"
                 id={"remove-song-" + index}
                 className="list-card-button"
-                value={"\u2715"}
-                onClick={handleRemoveSong}
-            />
+                color="inherit"
+                size="small"
+                onClick={handleRemoveSong}>
+                    <CloseIcon fontSize="inherit"/>
+            </IconButton>
         </div>
     );
 }
