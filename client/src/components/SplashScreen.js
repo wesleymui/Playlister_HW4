@@ -1,7 +1,7 @@
 export default function SplashScreen() {
     return (
         <div id="splash-screen">
-            Playlister
+            <h2>Playlister</h2>
         </div>
     )
 }
