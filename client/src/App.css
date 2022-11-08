@@ -68,10 +68,6 @@ body {
   vertical-align: center;
 }
 
-h2 {
-  user-select: none;
-  text-shadow: 2px 2px 4px #000000;
-}
 
 #edit-toolbar {
   background-color: transparent;
