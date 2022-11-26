@@ -13,6 +13,8 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import { ThemeProvider } from '@emotion/react';
+import { createTheme } from '@mui/system';
 
 export default function AppBanner() {
     const { auth } = useContext(AuthContext);
@@ -91,18 +93,30 @@ export default function AppBanner() {
             return <AccountCircle />;
     }
 
+    const theme = createTheme({
+        typography: {
+          fontFamily: [
+            '-apple-system',
+            'BlinkMacSystemFont',
+            '"Segoe UI"',
+            'Roboto',
+            '"Helvetica Neue"',
+            'Arial',
+            'sans-serif',
+            '"Apple Color Emoji"',
+            '"Segoe UI Emoji"',
+            '"Segoe UI Symbol"',
+          ].join(','),
+        },
+    });
+
     return (
         <Box sx={{ flexGrow: 1 }}>
             <AppBar position="static">
-                <Toolbar>
-                    <Typography                        
-                        variant="h4"
-                        noWrap
-                        component="div"
-                        sx={{ display: { xs: 'none', sm: 'block' } }}                        
-                    >
-                        <Link style={{ textDecoration: 'none', color: 'white' }} to='/'>⌂</Link>
-                    </Typography>
+                <Toolbar sx={{bgcolor: '#4e76cb'}}>
+                    <ThemeProvider theme={theme}>
+                        <Typography variant='h1' sx={{userSelect: 'none'}}>Playlister</Typography>
+                    </ThemeProvider>
                     <Box sx={{ flexGrow: 1 }}>{editToolbar}</Box>
                     <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                         <IconButton
