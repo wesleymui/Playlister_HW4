@@ -6,6 +6,12 @@ import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@mui/material/IconButton';
 import ListItem from '@mui/material/ListItem';
 import TextField from '@mui/material/TextField';
+import { Divider, ListItemText, Typography } from '@mui/material';
+import AuthContext from '../auth';
+import { createTheme, ThemeProvider } from '@mui/system';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import ThumbDownIcon from '@mui/icons-material/ThumbDown';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 /*
     This is a card in our list of top 5 lists. It lets select
@@ -16,9 +22,27 @@ import TextField from '@mui/material/TextField';
 */
 function ListCard(props) {
     const { store } = useContext(GlobalStoreContext);
+    const { auth } = useContext(AuthContext);
     const [editActive, setEditActive] = useState(false);
     const [text, setText] = useState("");
     const { idNamePair, selected } = props;
+
+    const theme = createTheme ({
+        typography: {
+          fontFamily: [
+            '-apple-system',
+            'BlinkMacSystemFont',
+            '"Segoe UI"',
+            'Roboto',
+            '"Helvetica Neue"',
+            'Arial',
+            'sans-serif',
+            '"Apple Color Emoji"',
+            '"Segoe UI Emoji"',
+            '"Segoe UI Symbol"',
+          ].join(','),
+        },
+    });
 
     function handleLoadList(event, id) {
         console.log("handleLoadList for " + id);
@@ -73,31 +97,61 @@ function ListCard(props) {
     if (store.isListNameEditActive) {
         cardStatus = true;
     }
+
+    let userName = auth.user.firstName + ' ' + auth.user.lastName;
     let cardElement =
         <ListItem
             id={idNamePair._id}
             key={idNamePair._id}
-            sx={{ marginTop: '15px', display: 'flex', p: 1 }}
             style={{ width: '100%', fontSize: '36pt', color: 'white' }}
             button
             onClick={(event) => {
                 handleLoadList(event, idNamePair._id)
             }}
         >
-            <Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.name}</Box>
-            <Box sx={{ p: 1 }}>
+                <ListItemText 
+                    primary={idNamePair.name} 
+                    secondary={"By:  " + userName} 
+                    primaryTypographyProps={{sx: {p: 1, paddingBottom: 0, flexGrow: 1, fontSize: 40}}}
+                    secondaryTypographyProps={{sx: {paddingLeft: 1, color: 'white', fontSize: 20}}}
+                />
+            <Box sx={{p: 1}}>
                 <IconButton onClick={handleToggleEdit} aria-label='edit'>
-                    <EditIcon style={{fontSize:'48pt', color: 'white'}} />
+                                <ThumbUpIcon style={{fontSize:'36pt', color: 'white'}}/>
                 </IconButton>
             </Box>
-            <Box sx={{ p: 1 }}>
-                <IconButton onClick={(event) => {
-                        handleDeleteList(event, idNamePair._id)
-                    }} aria-label='delete'>
-                    <DeleteIcon style={{fontSize:'48pt', color: 'white'}} />
-                </IconButton>
+            <Box sx={{p: 1}}>
+                <Typography>0</Typography>
+            </Box>
+            <Box sx={{p: 1}}>
+                <IconButton onClick={handleToggleEdit} aria-label='edit'>
+                                <ThumbDownIcon style={{fontSize:'36pt', color: 'white'}} />
+                            </IconButton>
+            </Box>
+            <Box sx={{p: 1}}>
+                <Typography>0</Typography>
+            </Box>
+            <Box sx={{p: 1}}>
+                <IconButton onClick={handleToggleEdit} aria-label='edit'>
+                                <ExpandMoreIcon style={{fontSize:'48pt', color: 'white'}} />
+                            </IconButton>
             </Box>
         </ListItem>
+        /*
+                    <Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.name}</Box>
+                    <Box sx={{ p: 1 }}>
+                        <IconButton onClick={handleToggleEdit} aria-label='edit'>
+                            <EditIcon style={{fontSize:'48pt', color: 'white'}} />
+                        </IconButton>
+                    </Box>
+                    <Box sx={{ p: 1 }}>
+                        <IconButton onClick={(event) => {
+                                handleDeleteList(event, idNamePair._id)
+                            }} aria-label='delete'>
+                            <DeleteIcon style={{fontSize:'48pt', color: 'white'}} />
+                        </IconButton>
+                    </Box>
+                    */
 
     if (editActive) {
         cardElement =
