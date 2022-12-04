@@ -21,6 +21,7 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
 import { FixedSizeList } from 'react-window';
+import NavBar from './NavBar';
 
 /*
     This React component lists all the playlists in the UI.
@@ -29,8 +30,6 @@ import { FixedSizeList } from 'react-window';
 */
 const HomeScreen = () => {
     const { store } = useContext(GlobalStoreContext);
-    const [anchorEl, setAnchorEl] = useState(null);
-    const isMenuOpen = Boolean(anchorEl);
 
     useEffect(() => {
         store.loadIdNamePairs();
@@ -39,27 +38,6 @@ const HomeScreen = () => {
     function handleCreateNewList() {
         store.createNewList();
     }
-
-    function handleSortMenuOpen(event) {
-        setAnchorEl(event.currentTarget);
-    }
-
-    function handleSortMenuClose() {
-        setAnchorEl(null);
-    }
-
-    const sortMenu =
-        <Menu
-            anchorEl={anchorEl}
-            open={isMenuOpen}
-            onClose={handleSortMenuClose}
-        >
-            <MenuItem onClick={handleSortMenuClose}>Name (A-Z)</MenuItem>
-            <MenuItem onClick={handleSortMenuClose}>Publish Date (Newest)</MenuItem>
-            <MenuItem onClick={handleSortMenuClose}>Listens (High - Low)</MenuItem>
-            <MenuItem onClick={handleSortMenuClose}>Likes (High - Low)</MenuItem>
-            <MenuItem onClick={handleSortMenuClose}>Dislikes (High - Low)</MenuItem>
-        </Menu>
 
     let listCard = "";
     if (store) {
@@ -80,44 +58,19 @@ const HomeScreen = () => {
             </List>;
     }
     return (
-        <Grid container>
+        <Grid container sx={{backgroundColor: '#4e76cb', pb: 2}}>
             <Grid item xs={12} sx={{flexGrow: 1}}>
-                <AppBar position='static'>
-                    <Toolbar>
-                        <IconButton>
-                            <HomeIcon fontSize='large' sx={{color: 'white'}}></HomeIcon>
-                        </IconButton>
-                        <IconButton>
-                            <GroupIcon fontSize='large' sx={{color: 'white'}}></GroupIcon>
-                        </IconButton>
-                        <IconButton>
-                            <PersonIcon fontSize='large' sx={{color: 'white'}}></PersonIcon>
-                        </IconButton>
-                        <Box component="div" sx={{paddingLeft: 40, flexGrow: 1}}>
-                            <TextField 
-                                id="filled-basic" 
-                                label="Search" 
-                                variant="filled" 
-                                size='small'
-                                sx={{bgcolor: 'white', borderRadius: 1, width: 500}}/>
-                        </Box>
-                        <Box>
-                            <IconButton>
-                                <SortIcon fontSize='large' sx={{color: 'white'}} onClick={handleSortMenuOpen}></SortIcon>
-                            </IconButton>
-                        </Box>
-                    </Toolbar>
-                </AppBar>
+                <NavBar/>
             </Grid>
             <Grid item xs={6}>
-                <Box sx={{backgroundColor: '#4e76cb', paddingTop: 2, paddingBottom: 2}}>
+                <Box sx={{backgroundColor: '#4e76cb', pt: 2}}>
                     { listCard }
                 </Box>
             </Grid>
             <Grid item xs={6}>
                 <Box sx={{backgroundColor: '#4e76cb'}}>
-                    <Tabs indicatorColor='black' textColor='white'>
-                        <Tab sx={{color: 'white'}} label="Player"/>
+                    <Tabs indicatorColor='white' textColor='white'>
+                        <Tab sx={{color: 'white', borderColor: 'black'}} label="Player"/>
                         <Tab sx={{color: 'white'}} label="Comments"/>
                     </Tabs>
                     <Box sx={{ml: 6, mt: 2}}><YouTube videoId='xgiN9zNZCuM'></YouTube></Box>
@@ -147,19 +100,18 @@ const HomeScreen = () => {
                 </Box>
             </Grid>
             <Grid item xs={12}>
-            <div id="list-selector-heading">
-                <Fab 
-                    color="primary" 
-                    aria-label="add"
-                    id="add-list-button"
-                    onClick={handleCreateNewList}
-                >
-                    <AddIcon />
-                </Fab>
-                    <Typography variant="h4" color="black">Your Lists</Typography>
-            </div>
+                <Box display="flex" justifyContent="center" alignItems="center" sx={{width: '100%', pt: 1, backgroundColor: '#4e76cb'}}>
+                        <Fab 
+                            color="primary" 
+                            aria-label="add"
+                            id="add-list-button"
+                            onClick={handleCreateNewList}
+                        >
+                            <AddIcon />
+                        </Fab>
+                            <Typography variant="h4" color="white">Your Lists</Typography>
+                </Box>
             </Grid>
-            { sortMenu }
         </Grid>
         /*<div id="playlist-selector">
             <div id="list-selector-heading">

@@ -3,9 +3,12 @@ import { GlobalStoreContext } from '../store'
 
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close'
+import AuthContext from '../auth';
+import { Link, ListItemButton, Typography } from '@mui/material';
 
 function SongCard(props) {
     const { store } = useContext(GlobalStoreContext);
+    const { auth } = useContext(AuthContext);
     const [ draggedTo, setDraggedTo ] = useState(0);
     const { song, index } = props;
 
@@ -49,7 +52,7 @@ function SongCard(props) {
 
     let cardClass = "list-card unselected-list-card";
     return (
-        <div
+        <ListItemButton
             key={index}
             id={'song-' + index + '-card'}
             className={cardClass}
@@ -61,23 +64,16 @@ function SongCard(props) {
             draggable="true"
             onClick={handleClick}
         >
-            {index + 1}.
-            <a
+            <Typography variant='h6' sx={{color: 'white', pl: 2, pr: 1}}>{index + 1}.</Typography>
+            <Link
                 id={'song-' + index + '-link'}
                 className="song-link"
+                variant='h6'
                 href={"https://www.youtube.com/watch?v=" + song.youTubeId}>
                 {song.title} by {song.artist}
-            </a>
-            <IconButton
-                aria-label="close"
-                id={"remove-song-" + index}
-                className="list-card-button"
-                color="inherit"
-                size="small"
-                onClick={handleRemoveSong}>
-                    <CloseIcon fontSize="inherit"/>
-            </IconButton>
-        </div>
+                
+            </Link>
+        </ListItemButton>
     );
 }
 

@@ -32,22 +32,24 @@ function WorkspaceScreen() {
     }
     return (
         <Box>
-        <List 
-            id="playlist-cards" 
-            sx={{ width: '100%', bgcolor: 'background.paper' }}
-        >
-            {
-                store.currentList.songs.map((song, index) => (
-                    <SongCard
-                        id={'playlist-song-' + (index)}
-                        key={'playlist-song-' + (index)}
-                        index={index}
-                        song={song}
-                    />
-                ))  
-            }
-         </List>            
-         { modalJSX }
+            <List 
+                component='div'
+                disablePadding
+                id="playlist-cards"
+                sx={{ width: '100%', bgcolor: 'background.paper' }}
+            >
+                {
+                    store.currentList.songs.map((song, index) => (
+                        <SongCard
+                            id={'playlist-song-' + (index)}
+                            key={'playlist-song-' + (index)}
+                            index={index}
+                            song={song}
+                        />
+                    ))  
+                }
+            </List>            
+            { modalJSX }
          </Box>
     )
 }

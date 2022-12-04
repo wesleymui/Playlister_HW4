@@ -6,12 +6,16 @@ import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@mui/material/IconButton';
 import ListItem from '@mui/material/ListItem';
 import TextField from '@mui/material/TextField';
-import { Divider, ListItemText, Typography } from '@mui/material';
+import { Button, Collapse, Divider, List, ListItemButton, ListItemIcon, ListItemText, Stack, Typography } from '@mui/material';
 import AuthContext from '../auth';
 import { createTheme, ThemeProvider } from '@mui/system';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import WorkspaceScreen from './WorkspaceScreen';
+import SongCard from './SongCard';
 
 /*
     This is a card in our list of top 5 lists. It lets select
@@ -24,6 +28,7 @@ function ListCard(props) {
     const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext);
     const [editActive, setEditActive] = useState(false);
+    const [ listOpen, setListOpen] = useState(false);
     const [text, setText] = useState("");
     const { idNamePair, selected } = props;
 
@@ -55,6 +60,7 @@ function ListCard(props) {
 
             // CHANGE THE CURRENT LIST
             store.setCurrentList(id);
+            setListOpen(!listOpen);
         }
     }
 
@@ -89,6 +95,7 @@ function ListCard(props) {
         setText(event.target.value);
     }
 
+
     let selectClass = "unselected-list-card";
     if (selected) {
         selectClass = "selected-list-card";
@@ -98,6 +105,7 @@ function ListCard(props) {
         cardStatus = true;
     }
 
+
     let userName = auth.user.firstName + ' ' + auth.user.lastName;
     let cardElement =
         <ListItem
@@ -105,14 +113,11 @@ function ListCard(props) {
             key={idNamePair._id}
             style={{ width: '100%', fontSize: '36pt', color: 'white' }}
             button
-            onClick={(event) => {
-                handleLoadList(event, idNamePair._id)
-            }}
         >
                 <ListItemText 
                     primary={idNamePair.name} 
                     secondary={"By:  " + userName} 
-                    primaryTypographyProps={{sx: {p: 1, paddingBottom: 0, flexGrow: 1, fontSize: 40}}}
+                    primaryTypographyProps={{sx: {p: 1, paddingBottom: 0, flexGrow: 1, fontSize: 35, fontWeight: 600}}}
                     secondaryTypographyProps={{sx: {paddingLeft: 1, color: 'white', fontSize: 20}}}
                 />
             <Box sx={{p: 1}}>
@@ -132,9 +137,13 @@ function ListCard(props) {
                 <Typography>0</Typography>
             </Box>
             <Box sx={{p: 1}}>
-                <IconButton onClick={handleToggleEdit} aria-label='edit'>
-                                <ExpandMoreIcon style={{fontSize:'48pt', color: 'white'}} />
-                            </IconButton>
+                <ListItemButton 
+                onClick={(event) => {
+                    handleLoadList(event, idNamePair._id)
+                }}
+                style={{fontSize:'48pt', color: 'white'}}>
+                    {listOpen ? <ExpandLess/> : <ExpandMore/>}
+                </ListItemButton>
             </Box>
         </ListItem>
         /*
@@ -153,6 +162,7 @@ function ListCard(props) {
                     </Box>
                     */
 
+                    /*
     if (editActive) {
         cardElement =
             <TextField
@@ -171,6 +181,62 @@ function ListCard(props) {
                 InputLabelProps={{style: {fontSize: 24, color: 'white'}}}
                 autoFocus
             />
+    }*/
+    //If current list is selected and is
+    if(store.currentList) {
+        return (
+            <div>
+            {cardElement}
+            <Collapse in={listOpen} timeout='auto' unmountOnExit>
+                <List 
+                    component='div'
+                    disablePadding
+                    id="playlist-cards"
+                    sx={{ width: '100%', bgcolor: '#123456'}}
+            >
+                    {
+    
+                        store.currentList.songs.map((song, index) => (
+                            <SongCard
+                                id={'playlist-song-' + (index)}
+                                key={'playlist-song-' + (index)}
+                                index={index}
+                                song={song}
+                                sx={{bgcolor: 'white'}}
+                            />
+                        ))  
+                    }
+                    <Stack direction='row' justifyContent='space-between'>
+                        <Box display="flex" 
+                        p={2} m={1} 
+                        justifyContent='flex-end' 
+                        alignItems='flex-end'
+                        >
+                            <Stack direction='row' spacing={2}>
+                                <Button variant='contained'>Undo</Button>
+                                <Button variant='contained'>Redo</Button>
+                            </Stack>
+                        </Box>
+                        <Box display="flex" 
+                        p={2} m={1} 
+                        justifyContent='flex-end' 
+                        alignItems='flex-end'
+                        >
+                            <Stack direction='row' spacing={2}>
+                                <Button variant='contained'>Publish</Button>
+                                <Button variant='contained'>Delete</Button>
+                                <Button variant='contained'>Duplicate</Button>
+                            </Stack>
+                        </Box>
+                    </Stack>
+                    <Stack direction='row' justifyContent='space-between'>
+                        <Typography variant='h6' sx={{pl: 4, color: 'white'}}>Published: </Typography>
+                        <Typography variant='h6' sx={{pr: 4, color: 'white'}}>Listens: </Typography>
+                    </Stack>
+                </List>   
+            </Collapse>
+           </div>
+        )
     }
     return (
         cardElement
