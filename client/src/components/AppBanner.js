@@ -117,7 +117,7 @@ export default function AppBanner() {
                     <ThemeProvider theme={theme}>
                         <Typography variant='h1' sx={{userSelect: 'none'}}>Playlister</Typography>
                     </ThemeProvider>
-                    <Box sx={{ flexGrow: 1 }}>{editToolbar}</Box>
+                    <Box sx={{ flexGrow: 1 }}></Box>
                     <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                         <IconButton
                             size="large"

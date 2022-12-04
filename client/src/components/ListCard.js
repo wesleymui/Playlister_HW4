@@ -9,6 +9,7 @@ import TextField from '@mui/material/TextField';
 import { Button, Collapse, Divider, List, ListItemButton, ListItemIcon, ListItemText, Stack, Typography } from '@mui/material';
 import AuthContext from '../auth';
 import { createTheme, ThemeProvider } from '@mui/system';
+import AddIcon from '@mui/icons-material/Add';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -16,6 +17,7 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import WorkspaceScreen from './WorkspaceScreen';
 import SongCard from './SongCard';
+import EditToolbar from './EditToolbar';
 
 /*
     This is a card in our list of top 5 lists. It lets select
@@ -62,6 +64,10 @@ function ListCard(props) {
             store.setCurrentList(id);
             setListOpen(!listOpen);
         }
+    }
+
+    function handleAddNewSong() {
+        store.addNewSong();
     }
 
     function handleToggleEdit(event) {
@@ -146,6 +152,28 @@ function ListCard(props) {
                 </ListItemButton>
             </Box>
         </ListItem>
+    
+    let buttonList = 
+        <Stack direction='row' justifyContent='space-between'>
+            <Box display="flex" 
+            p={2} m={1} 
+            justifyContent='flex-start' 
+            alignItems='flex-start'
+            >
+                <EditToolbar/>
+            </Box>
+            <Box display="flex" 
+            p={2} m={1} 
+            justifyContent='flex-end' 
+            alignItems='flex-end'
+            >
+                <Stack direction='row' spacing={2}>
+                    <Button variant='contained'>Publish</Button>
+                    <Button variant='contained'>Delete</Button>
+                    <Button variant='contained'>Duplicate</Button>
+                </Stack>
+            </Box>
+        </Stack>
         /*
                     <Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.name}</Box>
                     <Box sx={{ p: 1 }}>
@@ -182,7 +210,7 @@ function ListCard(props) {
                 autoFocus
             />
     }*/
-    //If current list is selected and is
+    //If current list is selected and is open for editing
     if(store.currentList) {
         return (
             <div>
@@ -206,29 +234,7 @@ function ListCard(props) {
                             />
                         ))  
                     }
-                    <Stack direction='row' justifyContent='space-between'>
-                        <Box display="flex" 
-                        p={2} m={1} 
-                        justifyContent='flex-end' 
-                        alignItems='flex-end'
-                        >
-                            <Stack direction='row' spacing={2}>
-                                <Button variant='contained'>Undo</Button>
-                                <Button variant='contained'>Redo</Button>
-                            </Stack>
-                        </Box>
-                        <Box display="flex" 
-                        p={2} m={1} 
-                        justifyContent='flex-end' 
-                        alignItems='flex-end'
-                        >
-                            <Stack direction='row' spacing={2}>
-                                <Button variant='contained'>Publish</Button>
-                                <Button variant='contained'>Delete</Button>
-                                <Button variant='contained'>Duplicate</Button>
-                            </Stack>
-                        </Box>
-                    </Stack>
+                    { buttonList }
                     <Stack direction='row' justifyContent='space-between'>
                         <Typography variant='h6' sx={{pl: 4, color: 'white'}}>Published: </Typography>
                         <Typography variant='h6' sx={{pr: 4, color: 'white'}}>Listens: </Typography>
