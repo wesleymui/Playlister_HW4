@@ -18,6 +18,7 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import WorkspaceScreen from './WorkspaceScreen';
 import SongCard from './SongCard';
 import EditToolbar from './EditToolbar';
+import MUIDeleteModal from './MUIDeleteModal';
 
 /*
     This is a card in our list of top 5 lists. It lets select
@@ -90,6 +91,14 @@ function ListCard(props) {
         store.markListForDeletion(id);
     }
 
+    async function handlePublishList(event, id) {
+
+    }
+
+    async function handleDuplicateList(event, id) {
+        
+    }
+
     function handleKeyPress(event) {
         if (event.code === "Enter") {
             let id = event.target.id.substring("list-".length);
@@ -118,13 +127,13 @@ function ListCard(props) {
             id={idNamePair._id}
             key={idNamePair._id}
             style={{ width: '100%', fontSize: '36pt', color: 'white' }}
-            button
         >
                 <ListItemText 
                     primary={idNamePair.name} 
                     secondary={"By:  " + userName} 
                     primaryTypographyProps={{sx: {p: 1, paddingBottom: 0, flexGrow: 1, fontSize: 35, fontWeight: 600}}}
                     secondaryTypographyProps={{sx: {paddingLeft: 1, color: 'white', fontSize: 20}}}
+                    sx={{userSelect: 'none'}}
                 />
             <Box sx={{p: 1}}>
                 <IconButton onClick={handleToggleEdit} aria-label='edit'>
@@ -146,9 +155,8 @@ function ListCard(props) {
                 <ListItemButton 
                 onClick={(event) => {
                     handleLoadList(event, idNamePair._id)
-                }}
-                style={{fontSize:'48pt', color: 'white'}}>
-                    {listOpen ? <ExpandLess/> : <ExpandMore/>}
+                }}>
+                    {listOpen ? <ExpandLess style={{fontSize:'48pt', color: 'white'}}/> : <ExpandMore style={{fontSize:'48pt', color: 'white'}}/>}
                 </ListItemButton>
             </Box>
         </ListItem>
@@ -168,9 +176,17 @@ function ListCard(props) {
             alignItems='flex-end'
             >
                 <Stack direction='row' spacing={2}>
-                    <Button variant='contained'>Publish</Button>
-                    <Button variant='contained'>Delete</Button>
-                    <Button variant='contained'>Duplicate</Button>
+                    <Button variant='contained' onClick={(event) => {
+                        handlePublishList(event, idNamePair._id)
+                    }}>Publish</Button>
+                    <Button variant='contained'
+                    onClick={(event) => {
+                        handleDeleteList(event, idNamePair._id)
+                    }}
+                    >Delete</Button>
+                    <Button variant='contained' onClick={(event) => {
+                        handleDuplicateList(event, idNamePair._id)
+                    }}>Duplicate</Button>
                 </Stack>
             </Box>
         </Stack>
@@ -220,7 +236,7 @@ function ListCard(props) {
                     component='div'
                     disablePadding
                     id="playlist-cards"
-                    sx={{ width: '100%', bgcolor: '#123456'}}
+                    sx={{ width: '100%', bgcolor: '#123456', pb: 1}}
             >
                     {
     

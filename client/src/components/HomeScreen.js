@@ -22,6 +22,7 @@ import PauseIcon from '@mui/icons-material/Pause';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
 import { FixedSizeList } from 'react-window';
 import NavBar from './NavBar';
+import MUIRemoveSongModal from './MUIRemoveSongModal';
 
 /*
     This React component lists all the playlists in the UI.
@@ -131,6 +132,7 @@ const HomeScreen = () => {
                     </Box>
                 </Grid>
                 <MUIDeleteModal/>
+                <MUIRemoveSongModal/>
             </ThemeProvider>
         </Grid>
         /*<div id="playlist-selector">
