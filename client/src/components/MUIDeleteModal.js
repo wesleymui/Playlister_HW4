@@ -3,7 +3,7 @@ import GlobalStoreContext from '../store';
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import { Button } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, createTheme, ThemeProvider } from '@mui/material';
 
 const style = {
     position: 'absolute',
@@ -14,6 +14,24 @@ const style = {
     bgcolor: '#123456',
     boxShadow: 24,
 };
+
+
+const theme = createTheme ({
+    typography: {
+      fontFamily: [
+        '-apple-system',
+        'BlinkMacSystemFont',
+        '"Segoe UI"',
+        'Roboto',
+        '"Helvetica Neue"',
+        'Arial',
+        'sans-serif',
+        '"Apple Color Emoji"',
+        '"Segoe UI Emoji"',
+        '"Segoe UI Symbol"',
+      ].join(','),
+    },
+});
 
 export default function MUIDeleteModal() {
     const { store } = useContext(GlobalStoreContext);
@@ -29,13 +47,36 @@ export default function MUIDeleteModal() {
     }
 
     return (
+        <Dialog open={store.listMarkedForDeletion !== null}>
+            <ThemeProvider theme={theme}>
+            <DialogTitle>
+                Delete Playlist?
+            </DialogTitle>
+            <DialogContent>
+                <DialogContentText>
+                    Are you sure you want to delete the {name} playlist?
+                </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button
+                    variant='contained'
+                    onClick={handleDeleteList}
+                >Confirm</Button>
+                <Button
+                    variant='contained'
+                    onClick={handleCloseModal}
+                >Cancel</Button>
+            </DialogActions>
+            </ThemeProvider>
+        </Dialog>
+        /*
         <Modal
             open={store.listMarkedForDeletion !== null}
         >
             <Box sx={style}>
                 <div className="modal-dialog">
                 <header className="dialog-header">
-                    Delete the {name} playlist?
+                    Are you sure you want to delete the {name} playlist?
                 </header>
                 <div id="confirm-cancel-container">
                     <Button
@@ -56,5 +97,6 @@ export default function MUIDeleteModal() {
             </div>
             </Box>
         </Modal>
+        */
     );
 }
