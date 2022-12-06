@@ -570,6 +570,7 @@ function GlobalStoreContextProvider(props) {
             }
         }
         updateList(id, list);
+        
     }
 
 

@@ -117,12 +117,32 @@ function ListCard(props) {
     }
 
     function handleLike(event) {
-        list.likes = list.likes + 1;
+        event.stopPropagation();
+        let index = list.likes.indexOf(list.ownerEmail);
+        if(index == -1) {
+            index = list.dislikes.indexOf(list.ownerEmail);
+            if(index != -1) {
+                list.dislikes.splice(index, 1);
+            }
+            list.likes.push(list.ownerEmail);
+        } else {
+            list.likes.splice(index, 1);
+        }
         store.updateList(list._id, list);
     }
 
     function handleDislike(event) {
-        list.dislikes = list.dislikes + 1;
+        event.stopPropagation();
+        let index = list.dislikes.indexOf(list.ownerEmail);
+        if(index == -1) {
+            index = list.likes.indexOf(list.ownerEmail);
+            if(index != -1) {
+                list.likes.splice(index, 1);
+            }
+            list.dislikes.push(list.ownerEmail);
+        } else {
+            list.dislikes.splice(index, 1);
+        }
         store.updateList(list._id, list);
     }
 
@@ -157,7 +177,7 @@ function ListCard(props) {
                 </IconButton>
             </Box>
             <Box sx={{p: 1}}>
-                <Typography>{list.likes}</Typography>
+                <Typography>{list.likes.length}</Typography>
             </Box>
             <Box sx={{p: 1}}>
                 <IconButton onClick={handleDislike} aria-label='edit'>
@@ -165,7 +185,7 @@ function ListCard(props) {
                             </IconButton>
             </Box>
             <Box sx={{p: 1}}>
-                <Typography>{list.dislikes}</Typography>
+                <Typography>{list.dislikes.length}</Typography>
             </Box>
             <Box sx={{p: 1}}>
                 <ListItemButton 
