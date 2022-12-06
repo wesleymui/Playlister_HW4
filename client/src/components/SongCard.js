@@ -43,6 +43,10 @@ function SongCard(props) {
         store.showRemoveSongModal(index, song);
     }
     function handleClick(event) {
+        if (event.detail === 1) {
+            console.log("current song clicked");
+            store.setCurrentSong(song, index);
+        }
         // DOUBLE CLICK IS FOR SONG EDITING
         if (event.detail === 2) {
             console.log("double clicked!");
@@ -64,9 +68,10 @@ function SongCard(props) {
             draggable="true"
             onClick={handleClick}
             sx={{pt: 1, pb: 1}}
+            selected={song === store.currentSong}
         >
             <Typography variant='h6' sx={{color: 'white', pl: 2, pr: 1}}>{index + 1}.</Typography>
-            <Link
+            <Typography
                 id={'song-' + index + '-link'}
                 className="song-link"
                 variant='h6'
@@ -74,7 +79,7 @@ function SongCard(props) {
                 href={"https://www.youtube.com/watch?v=" + song.youTubeId}>
                 {song.title} by {song.artist}
                 
-            </Link>
+            </Typography>
             <IconButton
                 aria-label="close"
                 id={"remove-song-" + index}

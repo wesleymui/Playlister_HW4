@@ -1,25 +1,40 @@
-import React from 'react';
+import { Card, CardContent, IconButton, Typography } from '@mui/material';
+import { Box } from '@mui/system';
+import React, { useContext, useState } from 'react';
 import YouTube from 'react-youtube';
+import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import PauseIcon from '@mui/icons-material/Pause';
+import SkipNextIcon from '@mui/icons-material/SkipNext';
+import GlobalStoreContext from '../store';
 
 export default function YoutubePlayer() {
         // THIS EXAMPLE DEMONSTRATES HOW TO DYNAMICALLY MAKE A
     // YOUTUBE PLAYER AND EMBED IT IN YOUR SITE. IT ALSO
     // DEMONSTRATES HOW TO IMPLEMENT A PLAYLIST THAT MOVES
     // FROM ONE SONG TO THE NEXT
+    const { store } = useContext(GlobalStoreContext);
+    const [playing, setPlaying] = useState(false);
+
 
     // THIS WILL STORE OUR YOUTUBE PLAYER
     let player;
     let PLAYER_NAME = 'youtube_player';
 
     // THIS HAS THE YOUTUBE IDS FOR THE SONGS IN OUR PLAYLIST
-    let playlist = [
-    "AeUeLzBO0go",
-    "xgiN9zNZCuM",
-    "Hbb5GPxXF1w"
-    ];
+    let playlist = [];
+
+    if(store.currentList) {
+        let songs = store.currentList.songs;
+        if (songs) {
+            for(let i = 0; i < songs.length; i++) {
+                playlist[i] = songs[i].youTubeId;
+            }
+        }
+    }
 
     // THIS IS THE INDEX OF THE SONG CURRENTLY IN USE IN THE PLAYLIST
-    let currentSong;
+    let currentSong = store.currentSongIndex;
 
     // DYNAMICALLY LOAD THE YOUTUBE API FOR USE
     let tag = document.createElement('script');
@@ -32,45 +47,60 @@ export default function YoutubePlayer() {
     // OUR DYNAMICALLY LOADING INTO OUR PAGE'S SCRIPT
     function onYouTubeIframeAPIReady() {
     // START OUR PLAYLIST AT THE BEGINNING
-    currentSong = 0;
-
-    /*
+        currentSong = 0;
+    }
     // NOW MAKE OUR PLAYER WITH OUR DESIRED PROPERTIES
-    if (currentSong >= 0) {
-        player = new YT.Player(PLAYER_NAME, {
+    let playerOptions = {
         height: '390',
         width: '640',
         playerVars: {
-            'playsinline': 1,
-            'origin': "https://www.youtube.com"
+            // https://developers.google.com/youtube/player_parameters
+            autoplay: 0,
         },
-        events: {
-            // NOTE OUR EVENT HANDLER FUNCTIONS HERE
-            'onReady': onPlayerReady,
-            'onStateChange': onPlayerStateChange
-        }
-        });
-    }*/
+    };
+    let playlistName = store.currentList ? store.currentList.name : ""
+    let currentSongIndex = store.currentSongIndex !== -1 ? store.currentSongIndex : ""
+    let title = ''
+    let artist = ''
+    if(store.currentSong) {
+        title = store.currentSong.title
+        artist = store.currentSong.artist
     }
+    
 
     // THIS EVENT HANDLER GETS CALLED ONCE THE PLAYER IS CREATED
     function onPlayerReady(event) {
-    loadAndPlayCurrentSong();
-    event.target.playVideo();
+        event.target.playVideo();
     }
 
     // THIS FUNCTION LOADS THE CURRENT SONG INTO
     // THE PLAYER AND PLAYS IT
-    function loadAndPlayCurrentSong() {
-    let song = playlist[currentSong];
-    player.loadVideoById(song);
-    player.playVideo();
+    function loadAndPlayCurrentSong(player) {
+        let song = playlist[currentSong];
+        player.loadVideoById(song);
+        player.playVideo();
     }
 
     // THIS FUNCTION INCREMENTS THE PLAYLIST SONG TO THE NEXT ONE
     function incSong() {
-    currentSong++;
-    currentSong = currentSong % playlist.length;
+        currentSong++;
+        currentSong = currentSong % playlist.length;
+        store.setCurrentSong(playlist[currentSong], currentSong);
+    }
+
+    function decSong() {
+        currentSong--;
+        currentSong = currentSong % playlist.length;
+        store.setCurrentSong(playlist[currentSong], currentSong);
+    }
+
+    // THIS IS OUR EVENT HANDLER FOR WHEN THE YOUTUBE PLAYER'S STATE
+    // CHANGES. NOTE THAT playerStatus WILL HAVE A DIFFERENT INTEGER
+    // VALUE TO REPRESENT THE TYPE OF STATE CHANGE. A playerStatus
+    // VALUE OF 0 MEANS THE SONG PLAYING HAS ENDED.
+    function onPlayerReady(event) {
+        loadAndPlayCurrentSong(event.target);
+        event.target.playVideo();
     }
 
     // THIS IS OUR EVENT HANDLER FOR WHEN THE YOUTUBE PLAYER'S STATE
@@ -78,38 +108,72 @@ export default function YoutubePlayer() {
     // VALUE TO REPRESENT THE TYPE OF STATE CHANGE. A playerStatus
     // VALUE OF 0 MEANS THE SONG PLAYING HAS ENDED.
     function onPlayerStateChange(event) {
-    let playerStatus = event.data;
-    let color;
-    if (playerStatus == -1) {
-        // VIDEO UNSTARTED
-        color = "#37474F";
-        console.log("-1 Video unstarted");
-    } else if (playerStatus == 0) {
-        // THE VIDEO HAS COMPLETED PLAYING
-        color = "#FFFF00";
-        console.log("0 Video ended");
-        incSong();
-        loadAndPlayCurrentSong();
-    } else if (playerStatus == 1) {
-        // THE VIDEO IS PLAYED
-        color = "#33691E";
-        console.log("1 Video played");
-    } else if (playerStatus == 2) {
-        // THE VIDEO IS PAUSED
-        color = "#DD2C00";
-        console.log("2 Video paused");
-    } else if (playerStatus == 3) {
-        // THE VIDEO IS BUFFERING
-        color = "#AA00FF";
-        console.log("3 Video buffering");
-    } else if (playerStatus == 5) {
-        // THE VIDEO HAS BEEN CUED
-        color = "#FF6DOO";
-        console.log("5 Video cued");
+        let playerStatus = event.data;
+        let player = event.target;
+        if (playerStatus === -1) {
+            // VIDEO UNSTARTED
+            console.log("-1 Video unstarted");
+        } else if (playerStatus === 0) {
+            // THE VIDEO HAS COMPLETED PLAYING
+            console.log("0 Video ended");
+            incSong();
+            loadAndPlayCurrentSong(player);
+        } else if (playerStatus === 1) {
+            // THE VIDEO IS PLAYED
+            console.log("1 Video played");
+        } else if (playerStatus === 2) {
+            // THE VIDEO IS PAUSED
+            console.log("2 Video paused");
+        } else if (playerStatus === 3) {
+            // THE VIDEO IS BUFFERING
+            console.log("3 Video buffering");
+        } else if (playerStatus === 5) {
+            // THE VIDEO HAS BEEN CUED
+            console.log("5 Video cued");
+        }
     }
-    if (color) {
-        document.getElementById(PLAYER_NAME).style.borderColor = color;
-    }
-    }
+
+
+    return (
+        <Box display='flex' flexDirection='column' sx={{bgColor: 'blue', alignItems: 'center', justifyContent: 'center'}}>
+            <YouTube 
+                videoId={playlist[currentSong]}
+                opts={playerOptions}
+                onReady={onPlayerReady}
+                onStateChange={onPlayerStateChange}
+                />
+            <Card sx={{width: '90%',bgcolor: '#123456'}}>
+                <CardContent>
+                    <Typography component="div" variant="h6" sx={{color: 'white', fontWeight: 700, userSelect: 'none'}}>
+                        Now Playing
+                    </Typography>
+                    <Typography component="div" variant='p' sx={{color: 'white', userSelect: 'none'}}>
+                        Playlist: {playlistName}
+                    </Typography>
+                    <Typography component="div" variant='p' sx={{color: 'white', userSelect: 'none'}}>
+                        Song #: {currentSongIndex}
+                    </Typography>
+                    <Typography component="div" variant='p' sx={{color: 'white', userSelect: 'none'}}>
+                        Title: {title} </Typography>
+                    <Typography component="div" variant='p' sx={{color: 'white', userSelect: 'none'}}>
+                        Artist: {artist}</Typography>
+                </CardContent>
+                <Box sx={{pb: 1}}>
+                    <IconButton onClick={decSong}>
+                        <SkipPreviousIcon fontSize='large' sx={{color: 'white'}}></SkipPreviousIcon>
+                    </IconButton>
+                    <IconButton onClick={onPlayerStateChange}>
+                        <PauseIcon fontSize='large' sx={{color: 'white'}}></PauseIcon>
+                    </IconButton>
+                    <IconButton onClick={onPlayerReady}>
+                        <PlayArrowIcon fontSize='large' sx={{color: 'white'}}></PlayArrowIcon>
+                    </IconButton>
+                    <IconButton onClick={incSong}>
+                        <SkipNextIcon fontSize='large' sx={{color: 'white'}}></SkipNextIcon>
+                    </IconButton>
+                </Box>
+            </Card>
+        </Box>
+    )
 
 }

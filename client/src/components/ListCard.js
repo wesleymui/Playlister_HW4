@@ -62,8 +62,11 @@ function ListCard(props) {
             console.log("load " + event.target.id);
 
             // CHANGE THE CURRENT LIST
-            store.setCurrentList(id);
-            setListOpen(!listOpen);
+            if(!selected) {
+                store.setCurrentList(id);
+            } else {
+                store.closeCurrentList();
+            }
         }
     }
 
@@ -156,7 +159,7 @@ function ListCard(props) {
                 onClick={(event) => {
                     handleLoadList(event, idNamePair._id)
                 }}>
-                    {listOpen ? <ExpandLess style={{fontSize:'48pt', color: 'white'}}/> : <ExpandMore style={{fontSize:'48pt', color: 'white'}}/>}
+                    {selected ? <ExpandLess style={{fontSize:'48pt', color: 'white'}}/> : <ExpandMore style={{fontSize:'48pt', color: 'white'}}/>}
                 </ListItemButton>
             </Box>
         </ListItem>
@@ -171,9 +174,9 @@ function ListCard(props) {
                 <EditToolbar/>
             </Box>
             <Box display="flex" 
-            p={2} m={1} 
-            justifyContent='flex-end' 
-            alignItems='flex-end'
+                p={2} m={1} 
+                justifyContent='flex-end' 
+                alignItems='flex-end'
             >
                 <Stack direction='row' spacing={2}>
                     <Button variant='contained' onClick={(event) => {
@@ -227,11 +230,11 @@ function ListCard(props) {
             />
     }*/
     //If current list is selected and is open for editing
-    if(store.currentList) {
+    if(selected) {
         return (
             <div>
             {cardElement}
-            <Collapse in={listOpen} timeout='auto' unmountOnExit>
+            <Collapse in={selected} timeout='auto' unmountOnExit>
                 <List 
                     component='div'
                     disablePadding
