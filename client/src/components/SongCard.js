@@ -40,6 +40,7 @@ function SongCard(props) {
         store.addMoveSongTransaction(sourceIndex, targetIndex);
     }
     function handleRemoveSong(event) {
+        event.stopPropagation();
         store.showRemoveSongModal(index, song);
     }
     function handleClick(event) {
@@ -75,7 +76,7 @@ function SongCard(props) {
                 id={'song-' + index + '-link'}
                 className="song-link"
                 variant='h6'
-                sx={{flexGrow: 1}}
+                sx={{flexGrow: 1, color: 'white'}}
                 href={"https://www.youtube.com/watch?v=" + song.youTubeId}>
                 {song.title} by {song.artist}
                 

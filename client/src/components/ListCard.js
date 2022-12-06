@@ -30,11 +30,14 @@ import MUIDeleteModal from './MUIDeleteModal';
 function ListCard(props) {
     const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext);
-    const [editActive, setEditActive] = useState(false);
+    const [ editActive, setEditActive ] = useState(false);
     const [ listOpen, setListOpen] = useState(false);
     const [text, setText] = useState("");
-    const { idNamePair, selected } = props;
+    const { list, selected } = props;
 
+    //retreive list pair id
+    //find list from id
+    //update list by id
     const theme = createTheme ({
         typography: {
           fontFamily: [
@@ -113,6 +116,16 @@ function ListCard(props) {
         setText(event.target.value);
     }
 
+    function handleLike(event) {
+        list.likes = list.likes + 1;
+        store.updateList(list._id, list);
+    }
+
+    function handleDislike(event) {
+        list.dislikes = list.dislikes + 1;
+        store.updateList(list._id, list);
+    }
+
 
     let selectClass = "unselected-list-card";
     if (selected) {
@@ -127,37 +140,37 @@ function ListCard(props) {
     let userName = auth.user.firstName + ' ' + auth.user.lastName;
     let cardElement =
         <ListItem
-            id={idNamePair._id}
-            key={idNamePair._id}
+            id={list._id}
+            key={list._id}
             style={{ width: '100%', fontSize: '36pt', color: 'white' }}
         >
                 <ListItemText 
-                    primary={idNamePair.name} 
+                    primary={list.name} 
                     secondary={"By:  " + userName} 
                     primaryTypographyProps={{sx: {p: 1, paddingBottom: 0, flexGrow: 1, fontSize: 35, fontWeight: 600}}}
                     secondaryTypographyProps={{sx: {paddingLeft: 1, color: 'white', fontSize: 20}}}
                     sx={{userSelect: 'none'}}
                 />
             <Box sx={{p: 1}}>
-                <IconButton onClick={handleToggleEdit} aria-label='edit'>
+                <IconButton onClick={handleLike} aria-label='edit'>
                                 <ThumbUpIcon style={{fontSize:'36pt', color: 'white'}}/>
                 </IconButton>
             </Box>
             <Box sx={{p: 1}}>
-                <Typography>0</Typography>
+                <Typography>{list.likes}</Typography>
             </Box>
             <Box sx={{p: 1}}>
-                <IconButton onClick={handleToggleEdit} aria-label='edit'>
+                <IconButton onClick={handleDislike} aria-label='edit'>
                                 <ThumbDownIcon style={{fontSize:'36pt', color: 'white'}} />
                             </IconButton>
             </Box>
             <Box sx={{p: 1}}>
-                <Typography>0</Typography>
+                <Typography>{list.dislikes}</Typography>
             </Box>
             <Box sx={{p: 1}}>
                 <ListItemButton 
                 onClick={(event) => {
-                    handleLoadList(event, idNamePair._id)
+                    handleLoadList(event, list._id)
                 }}>
                     {selected ? <ExpandLess style={{fontSize:'48pt', color: 'white'}}/> : <ExpandMore style={{fontSize:'48pt', color: 'white'}}/>}
                 </ListItemButton>
@@ -180,15 +193,15 @@ function ListCard(props) {
             >
                 <Stack direction='row' spacing={2}>
                     <Button variant='contained' onClick={(event) => {
-                        handlePublishList(event, idNamePair._id)
+                        handlePublishList(event, list._id)
                     }}>Publish</Button>
                     <Button variant='contained'
                     onClick={(event) => {
-                        handleDeleteList(event, idNamePair._id)
+                        handleDeleteList(event, list._id)
                     }}
                     >Delete</Button>
                     <Button variant='contained' onClick={(event) => {
-                        handleDuplicateList(event, idNamePair._id)
+                        handleDuplicateList(event, list._id)
                     }}>Duplicate</Button>
                 </Stack>
             </Box>
@@ -255,8 +268,8 @@ function ListCard(props) {
                     }
                     { buttonList }
                     <Stack direction='row' justifyContent='space-between'>
-                        <Typography variant='h6' sx={{pl: 4, color: 'white'}}>Published: </Typography>
-                        <Typography variant='h6' sx={{pr: 4, color: 'white'}}>Listens: </Typography>
+                        <Typography variant='h6' sx={{pl: 4, color: 'white', userSelect: 'none'}}>Published: </Typography>
+                        <Typography variant='h6' sx={{pr: 4, color: 'white', userSelect: 'none'}}>Listens: </Typography>
                     </Stack>
                 </List>   
             </Collapse>

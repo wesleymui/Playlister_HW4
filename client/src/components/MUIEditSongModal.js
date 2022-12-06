@@ -11,10 +11,16 @@ const style = {
 
 export default function MUIEditSongModal() {
     const { store } = useContext(GlobalStoreContext);
-    const [ title, setTitle ] = useState(store.currentSong.title);
-    const [ artist, setArtist ] = useState(store.currentSong.artist);
-    const [ youTubeId, setYouTubeId ] = useState(store.currentSong.youTubeId);
 
+    let title = ""
+    let artist = ""
+    let youTubeId = ""
+
+    if(store.currentSong) {
+        title = store.currentSong.title;
+        artist = store.currentSong.artist;
+        youTubeId = store.currentSong.youTubeId;
+    }
     function handleConfirmEditSong() {
         let newSongData = {
             title: title,
@@ -29,15 +35,15 @@ export default function MUIEditSongModal() {
     }
 
     function handleUpdateTitle(event) {
-        setTitle(event.target.value);
+        title = event.target.value;
     }
 
     function handleUpdateArtist(event) {
-        setArtist(event.target.value);
+        artist = event.target.value;
     }
 
     function handleUpdateYouTubeId(event) {
-        setYouTubeId(event.target.value);
+        youTubeId = event.target.value;
     }
 
     return (

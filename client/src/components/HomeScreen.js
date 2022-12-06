@@ -23,6 +23,7 @@ import SkipNextIcon from '@mui/icons-material/SkipNext';
 import { FixedSizeList } from 'react-window';
 import NavBar from './NavBar';
 import MUIRemoveSongModal from './MUIRemoveSongModal';
+import MUIEditSongModal from './MUIEditSongModal';
 
 /*
     This React component lists all the playlists in the UI.
@@ -33,13 +34,13 @@ const HomeScreen = () => {
     const { store } = useContext(GlobalStoreContext);
 
     useEffect(() => {
-        store.loadIdNamePairs();
+        store.loadPlaylists();
     }, []);
 
     function handleCreateNewList() {
         store.createNewList();
+        //Open up list!
     }
-
     const theme = createTheme ({
         typography: {
           fontFamily: [
@@ -62,12 +63,12 @@ const HomeScreen = () => {
         listCard = 
             <List sx={{ maxWidth: '90%', left: '5%', bgcolor: '#123456', borderRadius: 1, maxHeight: 600, overflow: 'auto'}}>
             {
-                store.idNamePairs.map((pair) => (
+                store.playlists.map((list) => (
                     <div>
                         <ListCard
-                        key={pair._id}
-                        idNamePair={pair}
-                        selected={false}
+                        key={list._id}
+                        list={list}
+                        selected={store.currentList && (list._id === store.currentList._id)}
                     />
                     <Divider/>
                     </div>
@@ -92,30 +93,8 @@ const HomeScreen = () => {
                             <Tab sx={{color: 'white', borderColor: 'black'}} label="Player"/>
                             <Tab sx={{color: 'white'}} label="Comments"/>
                         </Tabs>
-                        <Box sx={{ml: 6, mt: 2}}><YouTube videoId='xgiN9zNZCuM'></YouTube></Box>
-                        <Box sx={{bgColor: 'blue'}}>
-                            <Card>
-                                <CardContent>
-                                    <Typography component="div" variant="h6" sx={{fontWeight: 700}}>Now Playing</Typography>
-                                    <Typography component="div" variant='p'>Playlist:</Typography>
-                                    <Typography component="div" variant='p'>Song #:</Typography>
-                                    <Typography component="div" variant='p'>Title:</Typography>
-                                    <Typography component="div" variant='p'>Artist:</Typography>
-                                    <IconButton>
-                                        <SkipPreviousIcon fontSize='large'></SkipPreviousIcon>
-                                    </IconButton>
-                                    <IconButton>
-                                        <PauseIcon fontSize='large'></PauseIcon>
-                                    </IconButton>
-                                    <IconButton>
-                                        <PlayArrowIcon fontSize='large'></PlayArrowIcon>
-                                    </IconButton>
-                                    <IconButton>
-                                        <SkipNextIcon fontSize='large'></SkipNextIcon>
-                                    </IconButton>
-                                </CardContent>
-                            </Card>
-                        </Box>
+                        
+                        <YoutubePlayer/>
                     </Box>
                 </Grid>
                 <Grid item xs={12}>
@@ -133,6 +112,7 @@ const HomeScreen = () => {
                 </Grid>
                 <MUIDeleteModal/>
                 <MUIRemoveSongModal/>
+                <MUIEditSongModal/>
             </ThemeProvider>
         </Grid>
         /*<div id="playlist-selector">
